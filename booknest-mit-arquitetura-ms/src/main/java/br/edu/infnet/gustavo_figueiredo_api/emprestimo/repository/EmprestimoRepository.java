@@ -1,8 +1,6 @@
 package br.edu.infnet.gustavo_figueiredo_api.emprestimo.repository;
 
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.Emprestimo;
-import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.Exemplar;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.model.Usuario;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
 import org.springframework.data.jpa.repository.*;
 
 import java.time.*;

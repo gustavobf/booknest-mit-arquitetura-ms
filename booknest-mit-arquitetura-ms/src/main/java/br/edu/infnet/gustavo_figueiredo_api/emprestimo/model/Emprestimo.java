@@ -1,8 +1,7 @@
 package br.edu.infnet.gustavo_figueiredo_api.emprestimo.model;
 
-import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.Exemplar;
-import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.Identificavel;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.model.Usuario;
+import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.model.*;
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.*;
 import jakarta.persistence.*;

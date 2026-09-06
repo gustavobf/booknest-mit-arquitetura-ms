@@ -1,8 +1,8 @@
 package br.edu.infnet.gustavo_figueiredo_api.usuario.service;
 
 import br.edu.infnet.gustavo_figueiredo_api.exception.*;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.model.Usuario;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.repository.UsuarioRepository;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.repository.*;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 

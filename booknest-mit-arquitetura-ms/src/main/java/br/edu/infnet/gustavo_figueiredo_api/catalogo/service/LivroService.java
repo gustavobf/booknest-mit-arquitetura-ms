@@ -1,8 +1,8 @@
 package br.edu.infnet.gustavo_figueiredo_api.catalogo.service;
 
-import br.edu.infnet.gustavo_figueiredo_api.exception.*;
 import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.*;
 import br.edu.infnet.gustavo_figueiredo_api.catalogo.repository.*;
+import br.edu.infnet.gustavo_figueiredo_api.exception.*;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 

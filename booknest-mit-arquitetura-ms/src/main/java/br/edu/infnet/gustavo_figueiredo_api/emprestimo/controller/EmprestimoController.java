@@ -1,9 +1,8 @@
 package br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller;
 
-import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.Exemplar;
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.RegistrarDevolucaoRequest;
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.Emprestimo;
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.service.EmprestimoService;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.*;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.service.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.enums.*;
 import io.swagger.v3.oas.annotations.media.*;

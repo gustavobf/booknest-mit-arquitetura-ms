@@ -1,7 +1,7 @@
 package br.edu.infnet.gustavo_figueiredo_api.catalogo.controller;
 
 import br.edu.infnet.gustavo_figueiredo_api.catalogo.integration.dto.*;
-import br.edu.infnet.gustavo_figueiredo_api.catalogo.service.CepService;
+import br.edu.infnet.gustavo_figueiredo_api.catalogo.service.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.*;

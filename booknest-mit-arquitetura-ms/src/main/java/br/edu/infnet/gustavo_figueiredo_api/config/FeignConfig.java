@@ -10,7 +10,7 @@ import org.springframework.context.annotation.*;
 public class FeignConfig {
     @Bean
     public ViaCepClient viaCepClient () {
-        return Feign.builder().decoder(new JacksonDecoder(new ObjectMapper())).target(ViaCepClient.class,
-                "https://viacep.com.br");
+        return Feign.builder().decoder(new JacksonDecoder(new ObjectMapper()))
+                .target(ViaCepClient.class, "https://viacep.com.br");
     }
 }

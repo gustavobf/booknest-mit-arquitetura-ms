@@ -1,6 +1,6 @@
 package br.edu.infnet.gustavo_figueiredo_api.usuario.repository;
 
-import br.edu.infnet.gustavo_figueiredo_api.usuario.model.Usuario;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.model.*;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.*;

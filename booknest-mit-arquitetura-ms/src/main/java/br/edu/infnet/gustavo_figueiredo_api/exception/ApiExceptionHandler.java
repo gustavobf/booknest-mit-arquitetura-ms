@@ -7,7 +7,6 @@ import org.springframework.http.converter.*;
 import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.*;
 import java.util.stream.*;
@@ -42,8 +41,10 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErroResposta> handleConstraintViolation (ConstraintViolationException ex,
-                                                                  HttpServletRequest request) {
-        String mensagem = ex.getConstraintViolations().stream().map(violacao -> violacao.getPropertyPath() + ": " + violacao.getMessage()).collect(Collectors.joining("; "));
+                                                                   HttpServletRequest request) {
+        String mensagem = ex.getConstraintViolations().stream()
+                .map(violacao -> violacao.getPropertyPath() + ": " + violacao.getMessage())
+                .collect(Collectors.joining("; "));
         return construirResposta(HttpStatus.BAD_REQUEST, mensagem, request.getRequestURI());
     }
 

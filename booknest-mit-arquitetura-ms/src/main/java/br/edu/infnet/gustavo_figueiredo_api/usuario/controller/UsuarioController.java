@@ -1,8 +1,8 @@
 package br.edu.infnet.gustavo_figueiredo_api.usuario.controller;
 
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.Emprestimo;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.model.Usuario;
-import br.edu.infnet.gustavo_figueiredo_api.usuario.service.UsuarioService;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.usuario.service.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.enums.*;
 import io.swagger.v3.oas.annotations.media.*;
