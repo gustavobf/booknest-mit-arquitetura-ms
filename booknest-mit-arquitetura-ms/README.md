@@ -36,7 +36,7 @@ Pacotes principais:
 - `br.edu.infnet.gustavo_figueiredo_api.emprestimo.repository`
 - `br.edu.infnet.gustavo_figueiredo_api.emprestimo.model`
 
-### booknest-emprestimo-ms (candidato a serviço independente)
+### Empréstimo (candidato a serviço independente)
 O módulo de empréstimo concentra regras de negócio que futuramente poderiam ser extraídas.
 
 Responsabilidade:
@@ -51,49 +51,14 @@ Por que poderia ser executado separadamente:
 - pode crescer com notificações, multas e políticas de empréstimo sem alterar o restante da aplicação.
 
 Quais partes da aplicação dependem dele hoje:
-- `booknest-usuario-ms`, porque o empréstimo precisa validar o usuário e consultar seu histórico;
-- `booknest-catalogo-ms`, porque o empréstimo depende de exemplares e da disponibilidade do acervo.
-
-### booknest-catalogo-ms (candidato a serviço independente)
-O módulo de catálogo concentra o acervo e a estrutura bibliográfica da aplicação.
-
-Responsabilidade:
-- cadastrar e manter livros, autores, categorias, editoras e exemplares;
-- organizar o acervo e suas relações;
-- fornecer a base consultada pelas operações de empréstimo.
-
-Por que poderia ser executado separadamente:
-- possui um domínio próprio, com regras específicas de cadastro e consulta;
-- pode evoluir de forma independente conforme o acervo crescer;
-- serve de base para outros fluxos sem depender diretamente das regras de empréstimo.
-
-Quais partes da aplicação dependem dele hoje:
-- `booknest-emprestimo-ms`, que precisa consultar livros e exemplares disponíveis;
-- `booknest-usuario-ms`, indiretamente, quando as regras de negócio envolvem o contexto do acervo.
-
-### booknest-usuario-ms (candidato a serviço independente)
-O módulo de usuário centraliza os dados cadastrais e o relacionamento com os empréstimos.
-
-Responsabilidade:
-- cadastrar e manter os usuários da biblioteca;
-- controlar dados de identificação e status;
-- expor o histórico de empréstimos do usuário.
-
-Por que poderia ser executado separadamente:
-- tem ciclo de vida próprio e regras de manutenção independentes;
-- pode evoluir sem alterar o módulo de empréstimos ou catálogo;
-- é uma responsabilidade clara de identidade e cadastro.
-
-Quais partes da aplicação dependem dele hoje:
-- `booknest-emprestimo-ms`, que valida o usuário ao registrar empréstimos;
-- `booknest-catalogo-ms`, quando o contexto da biblioteca exige associação com o usuário.
+- o módulo de usuário, porque o empréstimo precisa validar o usuário e consultar seu histórico;
+- o módulo de catálogo, porque o empréstimo depende de exemplares e da disponibilidade do acervo.
 
 ## 🔗 Dependências entre módulos
 
 A dependência principal do sistema é:
 
-- `booknest-emprestimo-ms` → `booknest-catalogo-ms`
-- `booknest-emprestimo-ms` → `booknest-usuario-ms`
+- Empréstimo → Catálogo
 
 Exemplo: para registrar um empréstimo, a aplicação precisa consultar:
 - qual usuário está solicitando o empréstimo;
