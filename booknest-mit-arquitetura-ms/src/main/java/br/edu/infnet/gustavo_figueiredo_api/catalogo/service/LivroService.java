@@ -104,16 +104,6 @@ public class LivroService {
         return disponivel ? listarDisponiveis() : listarIndisponiveis();
     }
 
-    @Transactional(readOnly = true)
-    public List<Livro> buscarPorAutor (Long idAutor) {
-        return livroRepository.findByAutorId(idAutor);
-    }
-
-    @Transactional(readOnly = true)
-    public List<String> listarTitulosMaiusculos () {
-        return livroRepository.findAll().stream().map(Livro::getTitulo).map(String::toUpperCase).toList();
-    }
-
     private void prepararRelacionamentos (Livro livro) {
         Long idAutor = livro.getAutor().getId();
         Long idCategoria = livro.getCategoria().getId();
