@@ -1,7 +1,9 @@
 package br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller;
 
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.*;
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.EmprestimoRequest;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.EmprestimoResponse;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto.RegistrarDevolucaoRequest;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.Emprestimo;
 import br.edu.infnet.gustavo_figueiredo_api.emprestimo.service.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.enums.*;
@@ -27,42 +29,41 @@ public class EmprestimoController {
 
     @PostMapping
     @Operation(summary = "Criar empréstimo", description = "Cria um novo empréstimo.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Payload do empréstimo a ser criado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Emprestimo.class), examples = @ExampleObject(name = "Emprestimo", value = "{\n  \"usuario\": { \"id\": 1 },\n  \"exemplar\": { \"id\": 4 },\n  \"dataEmprestimo\": \"2026-08-18\",\n  \"dataEsperadaDevolucao\": \"2026-09-01\",\n  \"dataDevolucao\": null,\n  \"multa\": 0.0\n}")))
-    @ApiResponses({@ApiResponse(responseCode = "201", description = "Empréstimo criado com sucesso"),
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Payload do empréstimo a ser criado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoRequest.class), examples = @ExampleObject(name = "Emprestimo", value = "{\n  \"usuarioId\": 1,\n  \"exemplarId\": 4,\n  \"dataEmprestimo\": \"2026-08-18\",\n  \"dataEsperadaDevolucao\": \"2026-09-01\",\n  \"multa\": 0.0\n}")))
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Empréstimo criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")})
-    public ResponseEntity<Emprestimo> incluir (@Valid @RequestBody Emprestimo entidade) {
-        Emprestimo entidadeCriada = emprestimoService.incluir(entidade);
-        return ResponseEntity.status(HttpStatus.CREATED).body(entidadeCriada);
+    public ResponseEntity<EmprestimoResponse> incluir (@Valid @RequestBody EmprestimoRequest request) {
+        Emprestimo entidadeCriada = emprestimoService.incluir(request.toEntity());
+        return ResponseEntity.status(HttpStatus.CREATED).body(EmprestimoResponse.from(entidadeCriada));
     }
 
     @GetMapping
     @Operation(summary = "Listar empréstimos", description = "Retorna empréstimos com filtro opcional por situação de atraso. Sem parâmetro, retorna todos.")
     @Parameters({
             @Parameter(name = "atrasado", in = ParameterIn.QUERY, description = "Filtro opcional: true para atrasados, false para não atrasados. Sem parâmetro retorna todos.", example = "true")})
-    @ApiResponse(responseCode = "200", description = "Empréstimos retornados com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Emprestimo.class))))
-    public ResponseEntity<List<Emprestimo>> listar (
+    @ApiResponse(responseCode = "200", description = "Empréstimos retornados com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EmprestimoResponse.class))))
+    public ResponseEntity<List<EmprestimoResponse>> listar (
             @RequestParam(name = "atrasado", required = false) Boolean atrasado) {
-        return ResponseEntity.ok(emprestimoService.listarPorSituacaoAtraso(atrasado));
+        return ResponseEntity.ok(emprestimoService.listarPorSituacaoAtraso(atrasado).stream().map(EmprestimoResponse::from).toList());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obter empréstimo por ID", description = "Retorna um empréstimo específico pelo identificador.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Empréstimo encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Emprestimo.class))),
+            @ApiResponse(responseCode = "200", description = "Empréstimo encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoResponse.class))),
             @ApiResponse(responseCode = "404", description = "Empréstimo não encontrado")})
-    public ResponseEntity<Emprestimo> obterPorId (@PathVariable Long id) {
-        return ResponseEntity.ok(emprestimoService.obterPorId(id));
+    public ResponseEntity<EmprestimoResponse> obterPorId (@PathVariable Long id) {
+        return ResponseEntity.ok(EmprestimoResponse.from(emprestimoService.obterPorId(id)));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar empréstimo", description = "Atualiza um empréstimo existente pelo ID informado.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Payload atualizado do empréstimo.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Emprestimo.class), examples = @ExampleObject(name = "Empréstimo", value = "{\n  \"usuario\": { \"id\": 2 },\n  \"exemplar\": { \"id\": 3 },\n  \"dataEmprestimo\": \"2025-06-05\",\n  \"dataEsperadaDevolucao\": \"2025-06-20\",\n  \"dataDevolucao\": \"2025-06-22\",\n  \"multa\": 5.5\n}")))
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "Empréstimo atualizado com sucesso"),
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Payload atualizado do empréstimo.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoRequest.class), examples = @ExampleObject(name = "Empréstimo", value = "{\n  \"usuarioId\": 2,\n  \"exemplarId\": 3,\n  \"dataEmprestimo\": \"2025-06-05\",\n  \"dataEsperadaDevolucao\": \"2025-06-20\",\n  \"multa\": 5.5\n}")))
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Empréstimo atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
             @ApiResponse(responseCode = "404", description = "Empréstimo não encontrado")})
-    public ResponseEntity<Emprestimo> alterar (@PathVariable Long id, @Valid @RequestBody Emprestimo entidade) {
-        entidade.setId(id);
-        return ResponseEntity.ok(emprestimoService.alterar(entidade));
+    public ResponseEntity<EmprestimoResponse> alterar (@PathVariable Long id, @Valid @RequestBody EmprestimoRequest request) {
+        return ResponseEntity.ok(EmprestimoResponse.from(emprestimoService.alterar(request.toEntity(id))));
     }
 
     @DeleteMapping("/{id}")
@@ -78,12 +79,12 @@ public class EmprestimoController {
     @Operation(summary = "Registrar devolução", description = "Registra a devolução de um empréstimo existente, atualizando data de devolução e multa.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Dados da devolução a ser registrada.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RegistrarDevolucaoRequest.class), examples = @ExampleObject(value = "{\n  \"dataDevolucao\": \"2026-08-18\",\n  \"multa\": 2.5\n}")))
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Devolução registrada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Emprestimo.class))),
+            @ApiResponse(responseCode = "200", description = "Devolução registrada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmprestimoResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou empréstimo já devolvido"),
             @ApiResponse(responseCode = "404", description = "Empréstimo não encontrado")})
-    public ResponseEntity<Emprestimo> registrarDevolucao (
+    public ResponseEntity<EmprestimoResponse> registrarDevolucao (
             @Parameter(description = "ID do empréstimo", example = "2") @PathVariable Long id,
             @Valid @RequestBody RegistrarDevolucaoRequest request) {
-        return ResponseEntity.ok(emprestimoService.registrarDevolucao(id, request.dataDevolucao(), request.multa()));
+        return ResponseEntity.ok(EmprestimoResponse.from(emprestimoService.registrarDevolucao(id, request.dataDevolucao(), request.multa())));
     }
 }
