@@ -1,13 +1,9 @@
 package br.edu.infnet.gustavo_figueiredo_api.usuario.model;
 
 import br.edu.infnet.gustavo_figueiredo_api.catalogo.model.*;
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
-import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
-import java.util.*;
 
 @Entity
 @Table(name = "usuarios")
@@ -38,10 +34,6 @@ public class Usuario implements Identificavel {
     @Schema(description = "Indica se o usuário está ativo", example = "true")
     @NotNull(message = "Situação de atividade do usuário é obrigatória.")
     private Boolean ativo;
-
-    @OneToMany(mappedBy = "usuario")
-    @JsonIgnore
-    private List<Emprestimo> emprestimos = new ArrayList<>();
 
     public Usuario () {
     }
@@ -86,16 +78,8 @@ public class Usuario implements Identificavel {
         this.ativo = ativo;
     }
 
-    public List<Emprestimo> getEmprestimos () {
-        return emprestimos;
-    }
-
-    public long getEmprestimosEmAberto () {
-        return emprestimos.stream().filter(emprestimo -> !emprestimo.estaDevolvido()).count();
-    }
-
     @Override
     public String toString () {
-        return "Usuario{" + "id=" + id + ", nome='" + nome + '\'' + ", email='" + email + '\'' + ", matricula='" + matricula + '\'' + ", ativo=" + ativo + ", emprestimos=" + emprestimos.size() + ", emAberto=" + getEmprestimosEmAberto() + '}';
+        return "Usuario{" + "id=" + id + ", nome='" + nome + '\'' + ", email='" + email + '\'' + ", matricula='" + matricula + '\'' + ", ativo=" + ativo + '}';
     }
 }

@@ -1,12 +1,9 @@
 package br.edu.infnet.gustavo_figueiredo_api.catalogo.model;
 
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.*;
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
-import java.util.*;
 
 @Entity
 @Table(name = "exemplares")
@@ -39,10 +36,6 @@ public class Exemplar implements Identificavel {
     @NotNull(message = "Exemplar deve estar associado a um livro.")
     @JsonIgnoreProperties({"exemplares"})
     private Livro livro;
-
-    @OneToMany(mappedBy = "exemplar")
-    @JsonIgnore
-    private List<Emprestimo> emprestimos = new ArrayList<>();
 
     public Exemplar () {
     }
@@ -85,10 +78,6 @@ public class Exemplar implements Identificavel {
 
     public void setLivro (Livro livro) {
         this.livro = livro;
-    }
-
-    public List<Emprestimo> getEmprestimos () {
-        return emprestimos;
     }
 
     public void registrarDevolucao () {

@@ -1,4 +1,4 @@
-package br.edu.infnet.gustavo_figueiredo_api.exception;
+package br.edu.infnet.booknest.emprestimo.exception;
 
 import jakarta.servlet.http.*;
 import jakarta.validation.*;
@@ -20,7 +20,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({DadosInvalidosException.class, MethodArgumentTypeMismatchException.class,
-            HttpMessageNotReadableException.class, MissingPathVariableException.class})
+            HttpMessageNotReadableException.class})
     public ResponseEntity<ErroResposta> handleBadRequest (Exception ex, HttpServletRequest request) {
         return construirResposta(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
     }
@@ -29,12 +29,6 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErroResposta> handleBusinessRule (OperacaoNaoPermitidaException ex,
                                                             HttpServletRequest request) {
         return construirResposta(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
-    }
-
-    @ExceptionHandler(ServicoIndisponivelException.class)
-    public ResponseEntity<ErroResposta> handleServiceUnavailable (ServicoIndisponivelException ex,
-                                                                  HttpServletRequest request) {
-        return construirResposta(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

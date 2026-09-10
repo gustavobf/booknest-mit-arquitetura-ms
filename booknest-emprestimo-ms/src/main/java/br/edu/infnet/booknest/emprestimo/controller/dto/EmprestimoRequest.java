@@ -1,5 +1,6 @@
-package br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto;
+package br.edu.infnet.booknest.emprestimo.controller.dto;
 
+import br.edu.infnet.booknest.emprestimo.model.*;
 import io.swagger.v3.oas.annotations.media.*;
 import jakarta.validation.constraints.*;
 
@@ -15,4 +16,19 @@ public record EmprestimoRequest(
         @Schema(description = "Data prevista para devolução", example = "2026-09-01") @NotNull(message = "Data esperada de devolução é obrigatória.") LocalDate dataEsperadaDevolucao,
 
         @Schema(description = "Valor da multa", example = "0.0") @NotNull(message = "Multa é obrigatória.") @DecimalMin(value = "0.0", message = "Multa não pode ser negativa.") Double multa) {
+
+    public Emprestimo toEntity () {
+        return toEntity(null);
+    }
+
+    public Emprestimo toEntity (Long id) {
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setId(id);
+        emprestimo.setUsuarioId(usuarioId);
+        emprestimo.setExemplarId(exemplarId);
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        emprestimo.setDataEsperadaDevolucao(dataEsperadaDevolucao);
+        emprestimo.setMulta(multa);
+        return emprestimo;
+    }
 }

@@ -37,7 +37,7 @@ Pacotes principais:
 - `br.edu.infnet.gustavo_figueiredo_api.emprestimo.model`
 
 ### Empréstimo (candidato a serviço independente)
-O módulo de empréstimo concentra regras de negócio que futuramente poderiam ser extraídas.
+O módulo de empréstimo foi o candidato identificado na Etapa 1 e concentra regras de negócio que podem ser extraídas com pouca dependência estrutural do restante da aplicação.
 
 Responsabilidade:
 - registrar empréstimos;
@@ -66,6 +66,24 @@ Exemplo: para registrar um empréstimo, a aplicação precisa consultar:
 - qual livro pertence ao exemplar.
 
 Essa relação mostra o acoplamento natural entre as responsabilidades de negócio.
+
+## 🧱 Microsserviço de empréstimos
+
+A funcionalidade de empréstimo foi extraída para um serviço independente em `booknest-emprestimo-ms`.
+
+- Nome do serviço: Booknest Empréstimo MS
+- Responsabilidade: criar, consultar, atualizar e registrar devolução de empréstimos
+- Funcionalidade separada: módulo de empréstimo da API principal
+- Motivo: regras próprias de negócio, ciclo de vida independente e comunicação via rede
+
+A aplicação principal agora chama esse serviço por HTTP usando OpenFeign, configurado pelo valor `servico.emprestimo.url` em `application.properties`.
+
+### Reflexão arquitetural
+- Funcionalidade separada: empréstimo.
+- Motivo da escolha: possui responsabilidade clara e limites bem definidos.
+- O que ficou mais complexo: a comunicação entre aplicações passou a depender de rede, latência e disponibilidade.
+- Se o serviço ficar indisponível: a aplicação principal responde com erro amigável de indisponibilidade, sem expor detalhes internos da falha, e a operação de empréstimo não é concluída.
+- A extração é uma decisão arquitetural: em um sistema menor ela poderia permanecer no monólito sem prejuízo funcional, mas a separação aumenta independência operacional e escalabilidade.
 
 ## 📘 Documentação da API
 

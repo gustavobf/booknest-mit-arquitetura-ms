@@ -1,21 +1,15 @@
 package br.edu.infnet.gustavo_figueiredo_api.emprestimo.controller.dto;
 
-import br.edu.infnet.gustavo_figueiredo_api.emprestimo.model.Emprestimo;
+import br.edu.infnet.gustavo_figueiredo_api.emprestimo.integration.dto.*;
 
-import java.time.LocalDate;
+import java.time.*;
 
-public record EmprestimoResponse(Long id, Long usuarioId, String usuarioNome, Long exemplarId, String exemplarCodigo,
-                                 String livroTitulo, LocalDate dataEmprestimo, LocalDate dataEsperadaDevolucao,
-                                 LocalDate dataDevolucao, Double multa, Boolean devolvido, Boolean atrasado) {
-    public static EmprestimoResponse from (Emprestimo emprestimo) {
-        return new EmprestimoResponse(emprestimo.getId(),
-                emprestimo.getUsuario() != null ? emprestimo.getUsuario().getId() : null,
-                emprestimo.getUsuario() != null ? emprestimo.getUsuario().getNome() : null,
-                emprestimo.getExemplar() != null ? emprestimo.getExemplar().getId() : null,
-                emprestimo.getExemplar() != null ? emprestimo.getExemplar().getCodigo() : null,
-                emprestimo.getExemplar() != null && emprestimo.getExemplar().getLivro() != null
-                        ? emprestimo.getExemplar().getLivro().getTitulo() : null,
-                emprestimo.getDataEmprestimo(), emprestimo.getDataEsperadaDevolucao(), emprestimo.getDataDevolucao(),
-                emprestimo.getMulta(), emprestimo.estaDevolvido(), emprestimo.estaAtrasado());
+public record EmprestimoResponse(Long id, Long usuarioId, Long exemplarId, LocalDate dataEmprestimo,
+                                 LocalDate dataEsperadaDevolucao, LocalDate dataDevolucao, Double multa) {
+
+    public static EmprestimoResponse fromClientDto (EmprestimoClientResponse response) {
+        return new EmprestimoResponse(response.id(), response.usuarioId(), response.exemplarId(),
+                response.dataEmprestimo(), response.dataEsperadaDevolucao(), response.dataDevolucao(),
+                response.multa());
     }
 }
