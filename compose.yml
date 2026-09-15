@@ -1,0 +1,87 @@
+services:
+  config-server:
+    build:
+      context: ./config-server
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8888/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  postgres-principal:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: booknest
+      POSTGRES_USER: booknest
+      POSTGRES_PASSWORD: booknest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_principal_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booknest -d booknest"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgres-emprestimo:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: booknest_emprestimo
+      POSTGRES_USER: booknest
+      POSTGRES_PASSWORD: booknest
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_emprestimo_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booknest -d booknest_emprestimo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  booknest-emprestimo-ms:
+    build:
+      context: ./booknest-emprestimo-ms
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      DB_URL: jdbc:postgresql://postgres-emprestimo:5432/booknest_emprestimo
+      DB_USERNAME: booknest
+      DB_PASSWORD: booknest
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres-emprestimo:
+        condition: service_healthy
+    ports:
+      - "18081:8081"
+
+  booknest-mit-arquitetura-ms-gustavo-figueiredo-api:
+    build:
+      context: ./booknest-mit-arquitetura-ms
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      DB_URL: jdbc:postgresql://postgres-principal:5432/booknest
+      DB_USERNAME: booknest
+      DB_PASSWORD: booknest
+      SERVICO_EMPRESTIMO_URL: http://booknest-emprestimo-ms:8081
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres-principal:
+        condition: service_healthy
+      booknest-emprestimo-ms:
+        condition: service_started
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_principal_data:
+  postgres_emprestimo_data:

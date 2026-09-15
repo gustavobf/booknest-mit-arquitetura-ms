@@ -54,19 +54,6 @@ Quais partes da aplicação dependem dele hoje:
 - o módulo de usuário, porque o empréstimo precisa validar o usuário e consultar seu histórico;
 - o módulo de catálogo, porque o empréstimo depende de exemplares e da disponibilidade do acervo.
 
-## 🔗 Dependências entre módulos
-
-A dependência principal do sistema é:
-
-- Empréstimo → Catálogo
-
-Exemplo: para registrar um empréstimo, a aplicação precisa consultar:
-- qual usuário está solicitando o empréstimo;
-- qual exemplar está disponível;
-- qual livro pertence ao exemplar.
-
-Essa relação mostra o acoplamento natural entre as responsabilidades de negócio.
-
 ## 🧱 Microsserviço de empréstimos
 
 A funcionalidade de empréstimo foi extraída para um serviço independente em `booknest-emprestimo-ms`.
@@ -76,7 +63,7 @@ A funcionalidade de empréstimo foi extraída para um serviço independente em `
 - Funcionalidade separada: módulo de empréstimo da API principal
 - Motivo: regras próprias de negócio, ciclo de vida independente e comunicação via rede
 
-A aplicação principal agora chama esse serviço por HTTP usando OpenFeign, configurado pelo valor `servico.emprestimo.url` em `application.properties`.
+A aplicação principal chama esse serviço por HTTP usando OpenFeign, com a URL externa configurada por `SERVICO_EMPRESTIMO_URL` nos profiles.
 
 ### Reflexão arquitetural
 - Funcionalidade separada: empréstimo.
@@ -100,6 +87,30 @@ Principais recursos documentados:
 Acesse:
 - `http://localhost:8080/swagger-ui/index.html`
 
+## Configurações externalizadas:
+- `application-dev.properties`
+- `application-prod.properties`
+
+Variáveis de ambiente:
+- `DB_URL`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `SERVICO_EMPRESTIMO_URL`
+- `CONFIG_SERVER_URL`
+
+Infraestrutura adicionada:
+- `Dockerfile`
+- `compose.yml`
+- `config-server` (centraliza as propriedades em `config-server/config-repo`)
+
+### Reflexão arquitetural
+- Configurações que variam entre ambientes: porta, URL do Config Server, URL do banco, usuário, senha e URL do serviço remoto.
+- Externalizadas: configurações de banco, URL do serviço de empréstimo e URL do Config Server.
+- Um serviço não deve acessar diretamente o banco de outro porque cada responsabilidade deve manter seus próprios dados.
+- Docker empacota a aplicação para execução previsível.
+- Docker Compose sobe a solução completa com rede e dependências.
+- Configuração centralizada resolve a dispersão de parâmetros entre serviços e ambientes.
+
 ## 🚀 Como executar
 
 ### Pré-requisitos
@@ -112,4 +123,21 @@ Acesse:
 ./mvnw clean compile
 ./mvnw spring-boot:run
 ```
+
+### Execução integrada com Docker Compose
+
+No diretório raiz `booknest-mit-arquitetura-ms`, execute:
+
+```bash
+docker compose up --build
+```
+
+Serviços iniciados:
+- `config-server` (porta `8888`)
+- `booknest-mit-arquitetura-ms-gustavo-figueiredo-api` (porta `8080`)
+- `booknest-emprestimo-ms` (porta `8081`)
+- `postgres-principal` (banco da aplicação principal)
+- `postgres-emprestimo` (banco do serviço de empréstimo)
+
+No Compose, a comunicação entre containers usa nomes de serviço na rede Docker, sem `localhost` entre aplicações.
 ---
