@@ -12,7 +12,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class FeignConfig {
 
-    @Value("${servico.emprestimo.url:http://localhost:8081}")
+    @Value("${servico.emprestimo.url}")
     private String emprestimoServiceUrl;
 
     @Bean
