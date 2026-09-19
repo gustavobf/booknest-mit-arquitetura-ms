@@ -8,6 +8,8 @@ import java.util.*;
 public interface LivroRepository extends JpaRepository<Livro, Long> {
     List<Livro> findAllByOrderByTituloAsc ();
 
+    Optional<Livro> findByIsbn (String isbn);
+
     @Query("select distinct l from Livro l join l.exemplares e where e.disponivel = true")
     List<Livro> findDisponiveis ();
 

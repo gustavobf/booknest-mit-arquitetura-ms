@@ -45,6 +45,18 @@ services:
       timeout: 5s
       retries: 10
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
   booknest-emprestimo-ms:
     build:
       context: ./booknest-emprestimo-ms
@@ -54,10 +66,17 @@ services:
       DB_URL: jdbc:postgresql://postgres-emprestimo:5432/booknest_emprestimo
       DB_USERNAME: booknest
       DB_PASSWORD: booknest
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_CONSUMIDOR_HABILITADO: "true"
     depends_on:
       config-server:
         condition: service_healthy
       postgres-emprestimo:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     ports:
       - "18081:8081"
