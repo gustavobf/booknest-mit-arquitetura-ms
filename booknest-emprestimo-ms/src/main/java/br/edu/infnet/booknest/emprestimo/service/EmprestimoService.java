@@ -2,6 +2,7 @@ package br.edu.infnet.booknest.emprestimo.service;
 
 import br.edu.infnet.booknest.emprestimo.controller.dto.*;
 import br.edu.infnet.booknest.emprestimo.exception.*;
+import br.edu.infnet.booknest.emprestimo.messaging.*;
 import br.edu.infnet.booknest.emprestimo.model.*;
 import br.edu.infnet.booknest.emprestimo.repository.*;
 import org.springframework.stereotype.*;
@@ -14,9 +15,12 @@ import java.util.*;
 public class EmprestimoService {
 
     private final EmprestimoRepository emprestimoRepository;
+    private final NotificacaoEmprestimoProducer notificacaoEmprestimoProducer;
 
-    public EmprestimoService (EmprestimoRepository emprestimoRepository) {
+    public EmprestimoService (EmprestimoRepository emprestimoRepository,
+                               NotificacaoEmprestimoProducer notificacaoEmprestimoProducer) {
         this.emprestimoRepository = emprestimoRepository;
+        this.notificacaoEmprestimoProducer = notificacaoEmprestimoProducer;
     }
 
     protected void validarEntidade (Emprestimo entidade) {
@@ -54,7 +58,11 @@ public class EmprestimoService {
     @Transactional
     public Emprestimo incluir (Emprestimo entidade) {
         validarEntidade(entidade);
-        return emprestimoRepository.save(entidade);
+        Emprestimo salvo = emprestimoRepository.save(entidade);
+        notificacaoEmprestimoProducer.publicar(
+                NotificacaoEmprestimoMessage.emprestimoRealizado(salvo.getId(), salvo.getUsuarioId(),
+                        salvo.getExemplarId(), salvo.getDataEsperadaDevolucao()));
+        return salvo;
     }
 
     @Transactional
@@ -115,7 +123,11 @@ public class EmprestimoService {
         }
 
         emprestimo.registrarDevolucao(dataDevolucao, multa);
-        return emprestimoRepository.save(emprestimo);
+        Emprestimo salvo = emprestimoRepository.save(emprestimo);
+        notificacaoEmprestimoProducer.publicar(
+                NotificacaoEmprestimoMessage.devolucaoRegistrada(salvo.getId(), salvo.getUsuarioId(),
+                        salvo.getExemplarId(), salvo.getDataDevolucao()));
+        return salvo;
     }
 
     public EmprestimoResponse toResponse (Emprestimo emprestimo) {
